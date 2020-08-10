@@ -1,24 +1,24 @@
 const router = require('koa-router')();
 
 module.exports= class Router {
-	constructor(app) {
-		this.controllers = {};
-		this.app = app;
-		this.setRoutes();
-	}
+  constructor(app) {
+    this.controllers = {};
+    this.app = app;
+    this.setRoutes();
+  }
 
-	async response(obj, ctx, params = []) {
+  async response(obj, ctx, params = []) {
     if( typeof this.controllers[ obj.controller ] == 'undefined' ) {
-			var controller = require('./controllers/' + obj.controller);	
-			this.controllers[obj.controller] = new controller();
-		}
+      var controller = require('./controllers/' + obj.controller);	
+      this.controllers[obj.controller] = new controller();
+    }
 
     this.controllers[obj.controller].setCtx(ctx);
-		// this.controllers[obj.controller].setNext(next);
-		await this.controllers[obj.controller][obj.action](...params);
-	}
+    // this.controllers[obj.controller].setNext(next);
+    await this.controllers[obj.controller][obj.action](...params);
+  }
 
-	async setRoutes() {
+  async setRoutes() {
     router
       .get('/',  (ctx) => {
         this.response({
@@ -37,5 +37,5 @@ module.exports= class Router {
     
     this.app.use(router.routes());
     this.app.use(router.allowedMethods());
-	}
+  }
 }
